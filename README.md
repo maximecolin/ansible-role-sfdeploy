@@ -21,4 +21,5 @@ deploy:
     - web/media/cache
   run_migration: false
   acl_user: www-data
+  database_name: symfony
 ```

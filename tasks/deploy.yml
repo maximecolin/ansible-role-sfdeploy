@@ -46,7 +46,7 @@
   with_items: deploy.writable_directories
 
 - name: Create database
-  mysql_db: name=photographr state=present
+  mysql_db: name={{deploy.database_name}} state=present
 
 - name: Run migrations
   shell: cd {{deploy.root}}/releases/{{timestamp.stdout}} && php bin/console doctrine:migrations:migrate -n
