@@ -1,8 +1,8 @@
-# ansible-symfony-deploy
+# ansible-role-sfdeploy
 Deploy a Symfony2 project with ansible
 
 ```yml
-deploy:
+sfdeploy:
   root: /srv/my-project
   repository: git@github.com:my-vendor/my-project.git
   branch: master

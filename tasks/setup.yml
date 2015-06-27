@@ -1,22 +1,22 @@
 ---
 
 - name: Create root directory
-  file: state=directory path={{deploy.root}}
+  file: state=directory path={{sfdeploy.root}}
 
 - name: Create shared directory
-  file: state=directory path={{deploy.root}}/shared
+  file: state=directory path={{sfdeploy.root}}/shared
 
 - name: Create releases directory
-  file: state=directory path={{deploy.root}}/releases
+  file: state=directory path={{sfdeploy.root}}/releases
 
 - name: Create shared files dirs
-  file: state=directory recurse=yes path={{deploy.root}}/shared/{{item|dirname}}
-  with_items: deploy.shared_files
+  file: state=directory recurse=yes path={{sfdeploy.root}}/shared/{{item|dirname}}
+  with_items: sfdeploy.shared_files
 
 - name: Create shared files
-  file: state=touch path={{deploy.root}}/shared/{{item}}
-  with_items: deploy.shared_files
+  file: state=touch path={{sfdeploy.root}}/shared/{{item}}
+  with_items: sfdeploy.shared_files
 
 - name: Create shared directories
-  file: state=directory recurse=yes path={{deploy.root}}/shared/{{item}}
-  with_items: deploy.shared_directories
+  file: state=directory recurse=yes path={{sfdeploy.root}}/shared/{{item}}
+  with_items: sfdeploy.shared_directories
