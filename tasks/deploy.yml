@@ -15,11 +15,11 @@
   with_items: deploy.files_to_remove
 
 - name: Remove shared files
-  file: state=absent path={{deploy.root}}/releases/{{timestamp.stdout}}/{{item.dir}}/{{item.file}}
+  file: state=absent path={{deploy.root}}/releases/{{timestamp.stdout}}/{{item}}
   with_items: deploy.shared_files
 
 - name: Create symlinks for shared files
-  shell: ln -s {{deploy.root}}/shared/{{item.dir}}/{{item.file}} {{deploy.root}}/releases/{{timestamp.stdout}}/{{item.dir}}/{{item.file}}
+  shell: ln -s {{deploy.root}}/shared/{{item}} {{deploy.root}}/releases/{{timestamp.stdout}}/{{item}}
   with_items: deploy.shared_files
 
 - name: Remove shared directories
