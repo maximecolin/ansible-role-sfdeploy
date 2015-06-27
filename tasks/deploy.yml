@@ -50,6 +50,7 @@
 
 - name: Run migrations
   shell: cd {{deploy.root}}/releases/{{timestamp.stdout}} && php bin/console doctrine:migrations:migrate -n
+  when: deploy.run_migration|default(false)
 
 - name: Create symlink
   file: state=link src={{deploy.root}}/releases/{{timestamp.stdout}} path={{deploy.root}}/current

@@ -19,4 +19,5 @@ deploy:
     - var/logs
     - web/uploads
     - web/media/cache
+  run_migration: false
 ```
