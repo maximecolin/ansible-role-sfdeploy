@@ -1,0 +1,22 @@
+---
+
+- name: Create root directory
+  file: state=directory path={{deploy.root}}
+
+- name: Create shared directory
+  file: state=directory path={{deploy.root}}/shared
+
+- name: Create releases directory
+  file: state=directory path={{deploy.root}}/releases
+
+- name: Create shared files
+  file: state=directory recurse=yes path={{deploy.root}}/shared/{{item.dir}}
+  with_items: deploy.shared_files
+
+- name: Create shared files
+  file: state=touch path={{deploy.root}}/shared/{{item.dir}}/{{item.file}}
+  with_items: deploy.shared_files
+
+- name: Create shared directories
+  file: state=directory recurse=yes path={{deploy.root}}/shared/{{item}}
+  with_items: deploy.shared_directories

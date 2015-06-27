@@ -1,0 +1,55 @@
+---
+
+- name: Get timestamp
+  command: date +%s
+  register: timestamp
+
+- name: Add github.com to know_hosts
+  shell: ssh-keyscan -H github.com >> /etc/ssh/ssh_known_hosts
+
+- name: Pull sources from the repository.
+  git: repo={{deploy.repository}} dest={{deploy.root}}/releases/{{timestamp.stdout}} version={{deploy.branch}} key_file=/root/.ssh/id_rsa
+
+- name: Remove files
+  file: state=absent path={{deploy.root}}/releases/{{timestamp.stdout}}/{{item}}
+  with_items: deploy.files_to_remove
+
+- name: Remove shared files
+  file: state=absent path={{deploy.root}}/releases/{{timestamp.stdout}}/{{item.dir}}/{{item.file}}
+  with_items: deploy.shared_files
+
+- name: Create symlinks for shared files
+  shell: ln -s {{deploy.root}}/shared/{{item.dir}}/{{item.file}} {{deploy.root}}/releases/{{timestamp.stdout}}/{{item.dir}}/{{item.file}}
+  with_items: deploy.shared_files
+
+- name: Remove shared directories
+  file: state=absent path={{deploy.root}}/releases/{{timestamp.stdout}}/{{item}}
+  with_items: deploy.shared_directories
+
+- name: Create symlinks for shared directories
+  shell: ln -s {{deploy.root}}/shared/{{ item }} {{deploy.root}}/releases/{{timestamp.stdout}}/{{item}}
+  with_items: deploy.shared_directories
+
+#- name: Get http user
+#  shell: "ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d ' ' -f1"
+#  register: httpuser
+
+- name: Run composer install
+  shell: cd {{deploy.root}}/releases/{{timestamp.stdout}} && composer install --no-dev
+
+#- name: Run composer install
+#  composer: command="install --verbose" working_dir={{deploy.root}}/releases/{{timestamp.stdout}}
+
+- name: ACL
+  #shell: setfacl -R -m u:"{{httpuser.stdout}}":rwX -m u:`whoami`:rwX {{deploy.root}}/releases/{{timestamp.stdout}}/{{item}} && setfacl -dR -m u:"{{httpuser.stdout}}":rwX -m u:`whoami`:rwX {{deploy.root}}/releases/{{timestamp.stdout}}/{{item}}
+  shell: setfacl -R -m u:"www-data":rwX -m u:`whoami`:rwX {{deploy.root}}/releases/{{timestamp.stdout}}/{{item}} && setfacl -dR -m u:"www-data":rwX -m u:`whoami`:rwX {{deploy.root}}/releases/{{timestamp.stdout}}/{{item}}
+  with_items: deploy.writable_directories
+
+- name: Create database
+  mysql_db: name=photographr state=present
+
+- name: Run migrations
+  shell: cd {{deploy.root}}/releases/{{timestamp.stdout}} && php bin/console doctrine:migrations:migrate -n
+
+- name: Create symlink
+  file: state=link src={{deploy.root}}/releases/{{timestamp.stdout}} path={{deploy.root}}/current
