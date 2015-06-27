@@ -42,7 +42,7 @@
 
 - name: ACL
   #shell: setfacl -R -m u:"{{httpuser.stdout}}":rwX -m u:`whoami`:rwX {{deploy.root}}/releases/{{timestamp.stdout}}/{{item}} && setfacl -dR -m u:"{{httpuser.stdout}}":rwX -m u:`whoami`:rwX {{deploy.root}}/releases/{{timestamp.stdout}}/{{item}}
-  shell: setfacl -R -m u:"www-data":rwX -m u:`whoami`:rwX {{deploy.root}}/releases/{{timestamp.stdout}}/{{item}} && setfacl -dR -m u:"www-data":rwX -m u:`whoami`:rwX {{deploy.root}}/releases/{{timestamp.stdout}}/{{item}}
+  shell: setfacl -R -m u:"{{deploy.acl_user}}":rwX -m u:`whoami`:rwX {{deploy.root}}/releases/{{timestamp.stdout}}/{{item}} && setfacl -dR -m u:"{{deploy.acl_user}}":rwX -m u:`whoami`:rwX {{deploy.root}}/releases/{{timestamp.stdout}}/{{item}}
   with_items: deploy.writable_directories
 
 - name: Create database

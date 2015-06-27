@@ -20,4 +20,5 @@ deploy:
     - web/uploads
     - web/media/cache
   run_migration: false
+  acl_user: www-data
 ```
