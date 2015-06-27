@@ -1,7 +1,7 @@
 ---
 
 - name: Get timestamp
-  command: date +%s
+  command: date +%Y%m%d%H%M%S
   register: timestamp
 
 - name: Add github.com to know_hosts
