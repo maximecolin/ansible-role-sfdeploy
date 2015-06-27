@@ -20,6 +20,6 @@ deploy:
     - web/uploads
     - web/media/cache
   run_migration: false
+  create_database: true
   acl_user: www-data
-  database_name: symfony
 ```
