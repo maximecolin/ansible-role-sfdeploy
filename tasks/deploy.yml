@@ -47,3 +47,6 @@
 
 - name: Create symlink
   file: state=link src={{sfdeploy.root}}/releases/{{timestamp.stdout}} path={{sfdeploy.root}}/current
+
+- name: Remove old releases
+  shell: cd {{sfdeploy.root}}/releases && ls -1tr | head -n -{{sfdeploy.keep_releases|default(3)}} | xargs -d '\n' rm -Rf
