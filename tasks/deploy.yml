@@ -38,8 +38,7 @@
   with_items: sfdeploy.writable_directories
 
 - name: Create database
-  shell: cd {{sfdeploy.root}}/releases/{{timestamp.stdout}} && php bin/console doctrine:database:create
-  ignore_errors: true
+  shell: cd {{sfdeploy.root}}/releases/{{timestamp.stdout}} && php bin/console doctrine:database:create --if-not-exists
   when: sfdeploy.create_database|default(false)
 
 - name: Run migrations
