@@ -30,23 +30,16 @@
   shell: ln -s {{sfdeploy.root}}/shared/{{ item }} {{sfdeploy.root}}/releases/{{timestamp.stdout}}/{{item}}
   with_items: sfdeploy.shared_directories
 
-#- name: Get http user
-#  shell: "ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d ' ' -f1"
-#  register: httpuser
-
 - name: Run composer install
-  shell: cd {{sfdeploy.root}}/releases/{{timestamp.stdout}} && composer install --no-dev
-
-#- name: Run composer install
-#  composer: command="install --verbose" working_dir={{sfdeploy.root}}/releases/{{timestamp.stdout}}
+  composer: command="install --verbose" working_dir={{sfdeploy.root}}/releases/{{timestamp.stdout}} no_dev="yes"
 
 - name: ACL
-  #shell: setfacl -R -m u:"{{httpuser.stdout}}":rwX -m u:`whoami`:rwX {{sfdeploy.root}}/releases/{{timestamp.stdout}}/{{item}} && setfacl -dR -m u:"{{httpuser.stdout}}":rwX -m u:`whoami`:rwX {{sfdeploy.root}}/releases/{{timestamp.stdout}}/{{item}}
   shell: setfacl -R -m u:"{{sfdeploy.acl_user}}":rwX -m u:`whoami`:rwX {{sfdeploy.root}}/releases/{{timestamp.stdout}}/{{item}} && setfacl -dR -m u:"{{sfdeploy.acl_user}}":rwX -m u:`whoami`:rwX {{sfdeploy.root}}/releases/{{timestamp.stdout}}/{{item}}
   with_items: sfdeploy.writable_directories
 
 - name: Create database
-  shell: cd {{sfdeploy.root}}/releases/{{timestamp.stdout}} && php bin/console doctrine:database:create --if-not-exists
+  shell: cd {{sfdeploy.root}}/releases/{{timestamp.stdout}} && php bin/console doctrine:database:create
+  ignore_errors: true
   when: sfdeploy.create_database|default(false)
 
 - name: Run migrations
