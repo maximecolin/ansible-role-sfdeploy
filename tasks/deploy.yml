@@ -27,7 +27,7 @@
   with_items: sfdeploy.shared_directories
 
 - name: Create symlinks for shared directories
-  shell: ln -s {{sfdeploy.root}}/shared/{{ item }} {{sfdeploy.root}}/releases/{{timestamp.stdout}}/{{item}}
+  file: state=link src={{sfdeploy.root}}/shared/{{ item }} dest={{sfdeploy.root}}/releases/{{timestamp.stdout}}/{{item}}
   with_items: sfdeploy.shared_directories
 
 - name: Run composer install
