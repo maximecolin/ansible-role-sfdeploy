@@ -50,3 +50,6 @@
 
 - name: Remove old releases
   shell: cd {{sfdeploy.root}}/releases && ls -1tr | head -n -{{sfdeploy.keep_releases|default(3)}} | xargs -d '\n' rm -Rf
+
+- name: Cache clear and warmup
+  shell: cd {{sfdeploy.root}}/current && php bin/console cache:clear && php bin/console cache:warmup
